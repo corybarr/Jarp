@@ -1,0 +1,19 @@
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual C++ Express 2008
+Project("{F6B232CB-30E3-2F23-99D9-B93C5C539B76}") = "First VST", "First VST.vcproj", "{E289F6F1-67B3-AD46-051E-15D16CAD5E48}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E289F6F1-67B3-AD46-051E-15D16CAD5E48}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E289F6F1-67B3-AD46-051E-15D16CAD5E48}.Debug|Win32.Build.0 = Debug|Win32
+		{E289F6F1-67B3-AD46-051E-15D16CAD5E48}.Release|Win32.ActiveCfg = Release|Win32
+		{E289F6F1-67B3-AD46-051E-15D16CAD5E48}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
