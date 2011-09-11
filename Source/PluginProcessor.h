@@ -101,6 +101,8 @@ private:
 	int convertPpqToSamples(double ppq, AudioPlayHead::CurrentPositionInfo currentPosInfo);
 	int getSamplesPerBeat();
 	int getSamplesPerBeat(AudioPlayHead::CurrentPositionInfo currentPosInfo);
+	bool updateNoteOns(MidiBuffer midiBuffer);//, bool noteOn[]);
+	//bool updateNoteOns(MidiBuffer midiBuffer);
 };
 
 #endif  // __PLUGINPROCESSOR_H_7FE1B233__

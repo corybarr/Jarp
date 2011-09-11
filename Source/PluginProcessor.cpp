@@ -153,28 +153,9 @@ void FirstVstAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 		lastPosInfo = posInfo;
 	}
 
-	//this didn't work. Don't think I did DeviceManager.addMidiInput
-	//midiCollector.removeNextBlockOfMessages(incomingMidi, buffer.getNumSamples());
-	//keyboardState.processNextMidiBuffer (incomingMidi, 0, buffer.getNumSamples(), true);
+	updateGrid = updateGrid | updateNoteOns(midiMessages);//, isNoteOn);
+	//updateGrid = updateNoteOns(midiMessages);//, isNoteOn);
 
-	MidiBuffer::Iterator midiIterator (midiMessages);
-    //midiIterator.setNextSamplePosition (startSample);
-    MidiMessage m (0xf4, 0.0);
-	int midiEventSamplePos = 0;
-
-	bool useEvent = midiIterator.getNextEvent(m, midiEventSamplePos);
-	while(useEvent) {
-		if (m.isNoteOn()) {
-			isNoteOn[m.getNoteNumber()] = true;
-			updateGrid = true;
-		}
-		else if (m.isNoteOff()) {
-			isNoteOn[m.getNoteNumber()] = false;
-			updateGrid = true;
-		}
-
-		useEvent = midiIterator.getNextEvent(m, midiEventSamplePos);
-	}
  	midiMessages.clear();  //this turns off playing notes as they're received
 
 	double ppq = posInfo.ppqPosition;
@@ -347,4 +328,28 @@ int FirstVstAudioProcessor::getSamplesPerBeat(AudioPlayHead::CurrentPositionInfo
 	double beatsPerSec = currentPosInfo.bpm / 60.0;
 	double secPerBeat = 1.0 / beatsPerSec;	
 	return ((int) (secPerBeat * sampleRate));
+}
+
+bool FirstVstAudioProcessor::updateNoteOns(MidiBuffer midiBuffer){//, bool noteOn[]) {
+//bool FirstVSTAudioProcessor::updateNoteOns(MidiBuffer midiBuffer) {
+	bool shouldUpdate = false;
+
+	MidiBuffer::Iterator midiIterator (midiBuffer);
+    MidiMessage m (0xf4, 0.0);
+	int midiEventSamplePos;
+	bool useEvent = midiIterator.getNextEvent(m, midiEventSamplePos);
+	while(useEvent) {
+		if (m.isNoteOn()) {
+			isNoteOn[m.getNoteNumber()] = true;
+			shouldUpdate = true;
+		}
+		else if (m.isNoteOff()) {
+			isNoteOn[m.getNoteNumber()] = false;
+			shouldUpdate = true;
+		}
+
+		useEvent = midiIterator.getNextEvent(m, midiEventSamplePos);
+	}
+
+	return shouldUpdate;
 }
