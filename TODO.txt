@@ -1,0 +1,8 @@
+*sync issues since implementing forward-looking as opposed to
+ back-looking buffer
+**notes seem to lead the beat on occasion.
+**GUI update isn't perfectly synched
+
+*need to implement sustain
+
+*need to implement different arpeggiator methods
