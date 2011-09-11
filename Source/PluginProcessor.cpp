@@ -184,10 +184,11 @@ void FirstVstAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 		double secPerBeat = 1.0 / beatsPerSec;	
 
 		double playheadOffset = playheadColPrecise - playheadCol;
-		int playheadOffsetSamples = playheadOffset * secPerBeat * sampleRate;
-		playheadOffsetSamples = jmax (buffer.getNumSamples() - playheadOffsetSamples - 1, 0);
+		//int playheadOffsetSamples = playheadOffset * secPerBeat * sampleRate;
+		//playheadOffsetSamples = jmax (buffer.getNumSamples() - playheadOffsetSamples - 1, 0);
 
-		int numSamplesUntilPlayheadCol = playheadOffsetSamples; //TODO: this not correct yet
+		//int numSamplesUntilPlayheadCol = playheadOffsetSamples; //TODO: this not correct yet
+		int numSamplesUntilPlayheadCol = getSamplesToNextBeat(buffer, posInfo);
 
 		for (int i=0; i < 127; i++) {
 			if (notePlayedLastPlayheadCol[i]) {
@@ -205,7 +206,7 @@ void FirstVstAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 				Cell cell = grid[playheadCol][y];
 				if (cell.getNoteNum() != -1) {
 					MidiMessage noteOnMessage = MidiMessage::noteOn(1, cell.getNoteNum(), (uint8) 100);
-					midiMessages.addEvent(noteOnMessage, playheadOffsetSamples);
+					midiMessages.addEvent(noteOnMessage, numSamplesUntilPlayheadCol);
 					notePlayedLastPlayheadCol[cell.getNoteNum()] = true;
 				}
 			}
@@ -273,9 +274,7 @@ int FirstVstAudioProcessor::getNumNotesOn() {
 bool FirstVstAudioProcessor::bufferSpansNextBeat(AudioSampleBuffer& buffer, AudioPlayHead::CurrentPositionInfo currentPosInfo) {
 
 	int bufferSize = buffer.getNumSamples();
-	double ppq = currentPosInfo.ppqPosition;
-	double ppqUntilNextBeat = 1.0 - fmod(ppq * speed, 1);
-	int samplesUntilNextBeat = convertPpqToSamples(ppqUntilNextBeat, currentPosInfo);
+	int samplesUntilNextBeat = getSamplesToNextBeat(buffer, currentPosInfo);
 	return bufferSize >= samplesUntilNextBeat ? true : false;
 }
 
@@ -323,4 +322,12 @@ bool FirstVstAudioProcessor::updateNoteOns(MidiBuffer midiBuffer){//, bool noteO
 	}
 
 	return shouldUpdate;
+}
+
+int FirstVstAudioProcessor::getSamplesToNextBeat(AudioSampleBuffer& buffer, AudioPlayHead::CurrentPositionInfo currentPosInfo) {
+
+	int bufferSize = buffer.getNumSamples();
+	double ppq = currentPosInfo.ppqPosition;
+	double ppqUntilNextBeat = 1.0 - fmod(ppq * speed, 1);
+	return convertPpqToSamples(ppqUntilNextBeat, currentPosInfo);
 }
