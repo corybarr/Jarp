@@ -195,7 +195,7 @@ void FirstVstAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 	int numNotesOn = getNumNotesOn();
 	bool allNotesJustReleased = numNotesOn == 0 && updateGrid;
 	bool spansNextBeat = bufferSpansNextBeat(buffer, posInfo);
-	if ((bufferSpansNextBeat) &&
+	if ((spansNextBeat) &&
 	//if (playheadCol != lastPlayheadCol && 
 		(numNotesOn != 0 || allNotesJustReleased)) {
 
