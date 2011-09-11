@@ -120,8 +120,10 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\AscendingPattern.cpp" />
     <ClCompile Include="..\..\Source\Cell.cpp" />
     <ClCompile Include="..\..\Source\GridComponent.cpp" />
+    <ClCompile Include="..\..\Source\Pattern.cpp" />
     <ClCompile Include="..\..\Source\PluginProcessor.cpp" />
     <ClCompile Include="..\..\Source\PluginEditor.cpp" />
     <ClCompile Include="..\..\JuceLibraryCode\JuceLibraryCode1.cpp" />
@@ -131,8 +133,10 @@
     <ClCompile Include="..\..\..\..\..\Downloads\juce_1_53\juce\src\audio\plugin_client\VST\juce_VST_Wrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\AscendingPattern.h" />
     <ClInclude Include="..\..\Source\Cell.h" />
     <ClInclude Include="..\..\Source\GridComponent.h" />
+    <ClInclude Include="..\..\Source\Pattern.h" />
     <ClInclude Include="..\..\Source\PluginProcessor.h" />
     <ClInclude Include="..\..\Source\PluginEditor.h" />
     <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h" />

@@ -13,7 +13,7 @@
 
 //==============================================================================
 FirstVstAudioProcessor::FirstVstAudioProcessor() : 
-lastPlayheadCol(-1),
+//lastPlayheadCol(-1),
 speed(1),
 keyboardComponent (0),
 noteToPlay(80),
@@ -155,24 +155,18 @@ void FirstVstAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 
 	midiMessages.clear();  //this turns off playing notes as they're received
 
-	double ppq = posInfo.ppqPosition;
-	double playheadColPrecise = fmod (ppq * speed, 
-									  (double) jmax((int) grid.size(), 1) //don't ever want mod 0 performed
-									  );
-	//jmax used because playheadColPrecise can be 0, setting playheadCol to neg
-	int playheadCol = jmax(0, (int)playheadColPrecise);
-
-	//reset lastPlayheadCol to -1 when totalCol is 0 or 1 or playheadCol never changes
-	if (grid.size() <= 1) {
-		if (playheadColPrecise <= maxPlayheadColPrecise) 
-			lastPlayheadCol = -1;
-		maxPlayheadColPrecise = playheadColPrecise;
-	}
-
 	int numNotesOn = getNumNotesOn();
 	bool allNotesJustReleased = numNotesOn == 0 && updateGrid;
 	bool spansNextBeat = bufferSpansNextBeat(buffer, posInfo);
 	if (spansNextBeat && (numNotesOn != 0 || allNotesJustReleased)) {
+
+		double ppq = posInfo.ppqPosition;
+		double playheadColPrecise = fmod (ppq * speed, 
+										  (double) jmax((int) grid.size(), 1) //don't ever want mod 0 performed
+										  );
+		//jmax used because playheadColPrecise can be 0, setting playheadCol to neg
+		//int playheadCol = jmax(0, (int)playheadColPrecise);
+		int playheadCol = (int) playheadColPrecise;
 
 		if (updateGrid) {
 			AscendingPattern pattern = AscendingPattern();
@@ -205,6 +199,7 @@ void FirstVstAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 		}
 
 		playheadCol = jmin(playheadCol, (int) grid.size() - 1);  //if the grid has shrunk, make sure doesn't go past grid size
+
 		if (grid.size() != 0) {
 			for (int y=0; y < grid[playheadCol].size(); y++) {
 				Cell cell = grid[playheadCol][y];

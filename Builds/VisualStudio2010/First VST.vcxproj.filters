@@ -42,6 +42,12 @@
     <ClCompile Include="..\..\Source\GridComponent.cpp">
       <Filter>First VST\Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Pattern.cpp">
+      <Filter>First VST\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\AscendingPattern.cpp">
+      <Filter>First VST\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\PluginProcessor.h">
@@ -63,6 +69,12 @@
       <Filter>First VST\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\GridComponent.h">
+      <Filter>First VST\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Pattern.h">
+      <Filter>First VST\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\AscendingPattern.h">
       <Filter>First VST\Source</Filter>
     </ClInclude>
   </ItemGroup>

@@ -14,12 +14,8 @@ void GridComponent::paint (Graphics& g){
 
 	vector<vector<Cell> > grid = firstVstAudioProcessor->getGrid();
 
-	//DEBUG
-	int gridOuterSize = grid.size();
-
 	for (int x=0; x < grid.size(); x++) {
 		for (int y=0; y < grid[x].size(); y++) {
-			int gridInnerSize = grid[x].size(); //DEBUG
 			Cell cell = grid[x][y];
 			int numCols = grid.size();
 			int numRows = grid[x].size();
