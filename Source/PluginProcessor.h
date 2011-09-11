@@ -15,6 +15,7 @@
 #include "../JuceLibraryCode/JucePluginCharacteristics.h"
 #include <vector>
 #include "Cell.h"
+#include "AscendingPattern.h"
 using std::vector;
 
 //==============================================================================

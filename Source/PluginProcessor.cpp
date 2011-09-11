@@ -8,11 +8,8 @@
   ==============================================================================
 */
 
-
-
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
-
 
 //==============================================================================
 FirstVstAudioProcessor::FirstVstAudioProcessor() : 
@@ -153,20 +150,19 @@ void FirstVstAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 		lastPosInfo = posInfo;
 	}
 
-	updateGrid = updateGrid | updateNoteOns(midiMessages);//, isNoteOn);
-	//updateGrid = updateNoteOns(midiMessages);//, isNoteOn);
+	//update the array recording note-ons and remember if grid should be updated
+	updateGrid = updateGrid | updateNoteOns(midiMessages);
 
- 	midiMessages.clear();  //this turns off playing notes as they're received
+	midiMessages.clear();  //this turns off playing notes as they're received
 
 	double ppq = posInfo.ppqPosition;
-
 	double playheadColPrecise = fmod (ppq * speed, 
 									  (double) jmax((int) grid.size(), 1) //don't ever want mod 0 performed
 									  );
 	//jmax used because playheadColPrecise can be 0, setting playheadCol to neg
 	int playheadCol = jmax(0, (int)playheadColPrecise);
 
-	//can reset lastPlayheadCol to -1 when totalCol is 0 or 1
+	//reset lastPlayheadCol to -1 when totalCol is 0 or 1 or playheadCol never changes
 	if (grid.size() <= 1) {
 		if (playheadColPrecise <= maxPlayheadColPrecise) 
 			lastPlayheadCol = -1;
@@ -176,24 +172,12 @@ void FirstVstAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 	int numNotesOn = getNumNotesOn();
 	bool allNotesJustReleased = numNotesOn == 0 && updateGrid;
 	bool spansNextBeat = bufferSpansNextBeat(buffer, posInfo);
-	if ((spansNextBeat) &&
-	//if (playheadCol != lastPlayheadCol && 
-		(numNotesOn != 0 || allNotesJustReleased)) {
+	if (spansNextBeat && (numNotesOn != 0 || allNotesJustReleased)) {
 
 		if (updateGrid) {
-			//TODO: hard coded to do ascending arpeggio. Generalize
-			int numNotesOn = getNumNotesOn();
-			grid.resize(numNotesOn);
-			for (int x = 0; x < numNotesOn; x++) {	
-				grid[x].resize(numNotesOn);
-			}
-			int gridSpotCounter = 0;
-			for (int midiNoteNum=0; midiNoteNum < 127; midiNoteNum++) {
-				if (isNoteOn[midiNoteNum]) {
-					grid[gridSpotCounter][gridSpotCounter].setNoteNum(midiNoteNum);
-					gridSpotCounter++;
-				}
-			}
+			AscendingPattern pattern = AscendingPattern();
+			pattern.buildCells(isNoteOn, grid);
+
 			updateGrid = false;
 
 			//needed so playheadCol isn't bigger than the grid
@@ -232,14 +216,6 @@ void FirstVstAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 			}
 		}
 	}
-
-	// audio processing...
-    for (int channel = 0; channel < getNumInputChannels(); ++channel)
-    {
-        float* channelData = buffer.getSampleData (channel);
-
-        // ..do something to the data...
-    }
 
     // In case we have more outputs than inputs, we'll clear any output
     // channels that didn't contain input data, (because these aren't
