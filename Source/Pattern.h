@@ -8,6 +8,6 @@ class Pattern
 public:
 	Pattern();
 	~Pattern();
-	 virtual void buildCells(const bool noteOns[], vector<vector<Cell>> &grid) = 0;
+	 virtual void buildCells(const bool noteOns[], vector<vector<Cell> > &grid) = 0;
 };
 

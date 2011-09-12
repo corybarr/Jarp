@@ -6,6 +6,6 @@ class AscendingPattern :
 public:
 	AscendingPattern();
 	~AscendingPattern();
-	void buildCells(const bool noteOns[], vector<vector<Cell>> &grid);
+	void buildCells(const bool noteOns[], vector<vector<Cell> > &grid);
 };
 

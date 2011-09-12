@@ -10,7 +10,7 @@ AscendingPattern::~AscendingPattern()
 {
 }
 
-void AscendingPattern::buildCells(const bool noteOns[], vector<vector<Cell>> &grid) {
+void AscendingPattern::buildCells(const bool noteOns[], vector<vector<Cell> > &grid) {
 	int numNotesOn = 0;
 	for (int midiNote=0; midiNote < 127; midiNote++) {
 		if (noteOns[midiNote])
