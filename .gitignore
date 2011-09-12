@@ -3,4 +3,4 @@ ipch
 *.sdf
 *.opensdf
 *~
-
+.DS_Store
