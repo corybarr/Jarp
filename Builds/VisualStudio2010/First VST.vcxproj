@@ -122,6 +122,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\Source\AscendingPattern.cpp" />
     <ClCompile Include="..\..\Source\Cell.cpp" />
+    <ClCompile Include="..\..\Source\ControlsComponent.cpp" />
     <ClCompile Include="..\..\Source\GridComponent.cpp" />
     <ClCompile Include="..\..\Source\Pattern.cpp" />
     <ClCompile Include="..\..\Source\PluginProcessor.cpp" />
@@ -135,6 +136,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\Source\AscendingPattern.h" />
     <ClInclude Include="..\..\Source\Cell.h" />
+    <ClInclude Include="..\..\Source\ControlsComponent.h" />
     <ClInclude Include="..\..\Source\GridComponent.h" />
     <ClInclude Include="..\..\Source\Pattern.h" />
     <ClInclude Include="..\..\Source\PluginProcessor.h" />

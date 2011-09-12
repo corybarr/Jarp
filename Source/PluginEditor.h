@@ -15,6 +15,7 @@
 #include "../JuceLibraryCode/JucePluginCharacteristics.h"
 #include "PluginProcessor.h"
 #include "GridComponent.h"
+#include "ControlsComponent.h"
 
 //==============================================================================
 /**
@@ -37,6 +38,7 @@ private:
 	Colour bgColor;
 	FirstVstAudioProcessor* myFilter;
 	ScopedPointer<GridComponent> gridComponent;
+	ScopedPointer<ControlsComponent> controlsComponent;
 };
 
 

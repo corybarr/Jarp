@@ -11,19 +11,19 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
-
 //==============================================================================
 FirstVstAudioProcessorEditor::FirstVstAudioProcessorEditor (FirstVstAudioProcessor* ownerFilter)
     : AudioProcessorEditor (ownerFilter),
 	  myFilter (ownerFilter),
-	  gridComponent (nullptr)
+	  gridComponent (nullptr),
+	  controlsComponent (nullptr)
 {
 	bgColor = Colours::white;
 	startTimer(100);
 
 	addAndMakeVisible(gridComponent = new GridComponent(myFilter));
-	    
-	setSize (400, 300);
+	addAndMakeVisible(controlsComponent = new ControlsComponent(myFilter));
+	setSize (400, 400);
 }
 
 FirstVstAudioProcessorEditor::~FirstVstAudioProcessorEditor()
@@ -42,7 +42,8 @@ void FirstVstAudioProcessorEditor::paint (Graphics& g)
 }
 
 void FirstVstAudioProcessorEditor::resized() {
-	gridComponent->setBounds(10, 10, getWidth() - 20, getHeight() - 20);
+	gridComponent->setBounds(10, 10, getWidth() - 20, getHeight() - 100);
+	controlsComponent->setBounds(10 , getHeight() - 90 + 10, getWidth() - 20, 90 - 20);
 }
 
 void FirstVstAudioProcessorEditor::timerCallback() {

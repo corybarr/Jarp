@@ -48,6 +48,9 @@
     <ClCompile Include="..\..\Source\AscendingPattern.cpp">
       <Filter>First VST\Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\ControlsComponent.cpp">
+      <Filter>First VST\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\PluginProcessor.h">
@@ -75,6 +78,9 @@
       <Filter>First VST\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\AscendingPattern.h">
+      <Filter>First VST\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\ControlsComponent.h">
       <Filter>First VST\Source</Filter>
     </ClInclude>
   </ItemGroup>

@@ -13,7 +13,7 @@
 
 //==============================================================================
 FirstVstAudioProcessor::FirstVstAudioProcessor() : 
-sustainNotes(true),
+sustainNotes(false),
 speed(1),
 keyboardComponent (0),
 noteToPlay(80),
