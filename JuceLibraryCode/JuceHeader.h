@@ -14,7 +14,11 @@
 #define __APPHEADERFILE_FDBC310__
 
 #include "AppConfig.h"
-#include "juce.h"
+#ifdef JUCE_MAC
+    #include "juce.h"
+#else
+    #include "../../../../Downloads/juce_1_53/juce/juce_amalgamated.h"
+#endif
 
 namespace ProjectInfo
 {
