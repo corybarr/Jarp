@@ -73,12 +73,12 @@ public:
 
 	int getLastPlayheadCol() const;
 
+	bool sustainNotes;
+
 private:
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FirstVstAudioProcessor);
 	int speed;
-	//int totalRows;
-	//int totalCols;
 	int lastPlayheadCol;
 	double sampleRate;
 	int noteToPlay;
@@ -102,8 +102,7 @@ private:
 	int convertPpqToSamples(double ppq, AudioPlayHead::CurrentPositionInfo currentPosInfo);
 	int getSamplesPerBeat();
 	int getSamplesPerBeat(AudioPlayHead::CurrentPositionInfo currentPosInfo);
-	bool updateNoteOns(MidiBuffer midiBuffer);//, bool noteOn[]);
-	//bool updateNoteOns(MidiBuffer midiBuffer);
+	bool updateNoteOns(MidiBuffer midiBuffer);
 	int getSamplesToNextBeat(AudioSampleBuffer& buffer, AudioPlayHead::CurrentPositionInfo currentPosInfo);
 };
 

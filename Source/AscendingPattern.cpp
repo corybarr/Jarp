@@ -11,7 +11,6 @@ AscendingPattern::~AscendingPattern()
 }
 
 void AscendingPattern::buildCells(const bool noteOns[], vector<vector<Cell>> &grid) {
-	//TODO: hard coded to do ascending arpeggio. Generalize
 	int numNotesOn = 0;
 	for (int midiNote=0; midiNote < 127; midiNote++) {
 		if (noteOns[midiNote])

@@ -13,7 +13,7 @@
 
 //==============================================================================
 FirstVstAudioProcessor::FirstVstAudioProcessor() : 
-//lastPlayheadCol(-1),
+sustainNotes(false),
 speed(1),
 keyboardComponent (0),
 noteToPlay(80),
@@ -164,8 +164,6 @@ void FirstVstAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 		double playheadColPrecise = fmod (ppq * speed, 
 										  (double) jmax((int) grid.size(), 1) //don't ever want mod 0 performed
 										  );
-		//jmax used because playheadColPrecise can be 0, setting playheadCol to neg
-		//int playheadCol = jmax(0, (int)playheadColPrecise);
 		int playheadCol = (int) playheadColPrecise;
 
 		if (updateGrid) {
@@ -183,11 +181,6 @@ void FirstVstAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 		double beatsPerSec = posInfo.bpm * speed / 60.0;
 		double secPerBeat = 1.0 / beatsPerSec;	
 
-		double playheadOffset = playheadColPrecise - playheadCol;
-		//int playheadOffsetSamples = playheadOffset * secPerBeat * sampleRate;
-		//playheadOffsetSamples = jmax (buffer.getNumSamples() - playheadOffsetSamples - 1, 0);
-
-		//int numSamplesUntilPlayheadCol = playheadOffsetSamples; //TODO: this not correct yet
 		int numSamplesUntilPlayheadCol = getSamplesToNextBeat(buffer, posInfo);
 
 		for (int i=0; i < 127; i++) {
@@ -300,8 +293,7 @@ int FirstVstAudioProcessor::getSamplesPerBeat(AudioPlayHead::CurrentPositionInfo
 	return ((int) (secPerBeat * sampleRate));
 }
 
-bool FirstVstAudioProcessor::updateNoteOns(MidiBuffer midiBuffer){//, bool noteOn[]) {
-//bool FirstVSTAudioProcessor::updateNoteOns(MidiBuffer midiBuffer) {
+bool FirstVstAudioProcessor::updateNoteOns(MidiBuffer midiBuffer){
 	bool shouldUpdate = false;
 
 	MidiBuffer::Iterator midiIterator (midiBuffer);

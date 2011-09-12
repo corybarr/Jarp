@@ -46,9 +46,5 @@ void FirstVstAudioProcessorEditor::resized() {
 }
 
 void FirstVstAudioProcessorEditor::timerCallback() {
-	//Random rand (Time::currentTimeMillis());
-	//bgColor = Colour::fromRGB(rand.nextInt(255), rand.nextInt(255), rand.nextInt(255));
 	repaint();
-
-
 }
