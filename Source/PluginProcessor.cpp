@@ -13,7 +13,7 @@
 
 //==============================================================================
 FirstVstAudioProcessor::FirstVstAudioProcessor() : 
-sustainNotes(false),
+sustainNotes(true),
 speed(1),
 keyboardComponent (0),
 noteToPlay(80),
@@ -22,7 +22,9 @@ updateGrid(false)
 {
 	for (int i=0; i <= 127; i++) {
 		isNoteOn[i] = false;
-		notePlayedLastPlayheadCol[i] = false;
+		wasNoteOn[i] = false;
+		shouldSendNoteOff[i] = false;
+		startSustainedNote[i] = false;
 	}
 	// initialize grid
 	int numNotesOn = getNumNotesOn();
@@ -150,6 +152,7 @@ void FirstVstAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 		lastPosInfo = posInfo;
 	}
 
+
 	//update the array recording note-ons and remember if grid should be updated
 	updateGrid = updateGrid | updateNoteOns(midiMessages);
 
@@ -179,31 +182,42 @@ void FirstVstAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 		lastPlayheadCol = playheadCol;
 
 		double beatsPerSec = posInfo.bpm * speed / 60.0;
-		double secPerBeat = 1.0 / beatsPerSec;	
+		double secPerBeat = 1.0 / beatsPerSec;
 
 		int numSamplesUntilPlayheadCol = getSamplesToNextBeat(buffer, posInfo);
 
-		for (int i=0; i < 127; i++) {
-			if (notePlayedLastPlayheadCol[i]) {
+		for (int i=1; i < 127; i++) {
+			if (shouldSendNoteOff[i]) {
 				MidiMessage noteOffMessage = MidiMessage::noteOff(1, i);
 				midiMessages.addEvent(noteOffMessage, 
 									  jmax(0, numSamplesUntilPlayheadCol - 10));
-				notePlayedLastPlayheadCol[i] = false;
-			}
+				shouldSendNoteOff[i] = false;
+			} 
 		}
-
+	
 		playheadCol = jmin(playheadCol, (int) grid.size() - 1);  //if the grid has shrunk, make sure doesn't go past grid size
-
 		if (grid.size() != 0) {
-			for (int y=0; y < grid[playheadCol].size(); y++) {
+			for (int y=0; y < (int) grid[playheadCol].size(); y++) {
 				Cell cell = grid[playheadCol][y];
 				if (cell.getNoteNum() != -1) {
-					MidiMessage noteOnMessage = MidiMessage::noteOn(1, cell.getNoteNum(), (uint8) 100);
-					midiMessages.addEvent(noteOnMessage, numSamplesUntilPlayheadCol);
-					notePlayedLastPlayheadCol[cell.getNoteNum()] = true;
+					if (!sustainNotes) {
+						MidiMessage noteOnMessage = MidiMessage::noteOn(1, cell.getNoteNum(), (uint8) 100);
+						midiMessages.addEvent(noteOnMessage, numSamplesUntilPlayheadCol - 1);
+						shouldSendNoteOff[cell.getNoteNum()] = true;
+					} else {
+						if (isNoteOn[cell.getNoteNum()] && startSustainedNote[cell.getNoteNum()]) {
+							MidiMessage noteOnMessage = MidiMessage::noteOn(1, cell.getNoteNum(), (uint8) 100);
+							midiMessages.addEvent(noteOnMessage, numSamplesUntilPlayheadCol - 1);
+							startSustainedNote[cell.getNoteNum()] = false;
+						}
+					}
 				}
 			}
 		}
+	}
+
+	for (int i = 1; i < 127; i++) {
+		wasNoteOn[i] = isNoteOn[i];
 	}
 
     // In case we have more outputs than inputs, we'll clear any output
@@ -257,7 +271,7 @@ int FirstVstAudioProcessor::getLastPlayheadCol() const {
 
 int FirstVstAudioProcessor::getNumNotesOn() {
 	int numNotesOn = 0;
-	for (int i=0; i < 127; i++) {
+	for (int i=1; i < 127; i++) {
 		if (isNoteOn[i]) numNotesOn++;
 	}
 
@@ -273,7 +287,7 @@ bool FirstVstAudioProcessor::bufferSpansNextBeat(AudioSampleBuffer& buffer, Audi
 
 int FirstVstAudioProcessor::convertPpqToSamples(double ppq, AudioPlayHead::CurrentPositionInfo currentPosInfo) {
 	int samplesPerBeat = getSamplesPerBeat(currentPosInfo);
-	return (ppq * samplesPerBeat);
+	return ((int) (ppq * samplesPerBeat));
 }
 
 int FirstVstAudioProcessor::getSamplesPerBeat() {
@@ -302,10 +316,21 @@ bool FirstVstAudioProcessor::updateNoteOns(MidiBuffer midiBuffer){
 	bool useEvent = midiIterator.getNextEvent(m, midiEventSamplePos);
 	while(useEvent) {
 		if (m.isNoteOn()) {
+			if (sustainNotes) {
+				shouldSendNoteOff[m.getNoteNumber()] = false;
+				if (isNoteOn[m.getNoteNumber()] == false)
+					startSustainedNote[m.getNoteNumber()] = true;
+			}
 			isNoteOn[m.getNoteNumber()] = true;
 			shouldUpdate = true;
 		}
 		else if (m.isNoteOff()) {
+			if (sustainNotes) {
+				shouldSendNoteOff[m.getNoteNumber()] = true;
+				//if note was flipped on between beat, indicate not to trigger a sustained play
+				if (isNoteOn[m.getNoteNumber()] == true)
+					startSustainedNote[m.getNoteNumber()] = false;
+			}
 			isNoteOn[m.getNoteNumber()] = false;
 			shouldUpdate = true;
 		}

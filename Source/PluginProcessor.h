@@ -90,8 +90,11 @@ private:
 	MidiBuffer incomingMidi;
 	MidiMessageCollector midiCollector;
 
-	bool isNoteOn[127];
-	bool notePlayedLastPlayheadCol[127];  //used to determine which notes to send MIDI offs to
+	//setting size to 128 so I can use 1-based indexing to map directly to MIDI notes
+	bool isNoteOn[128];
+	bool wasNoteOn[128]; //used to determine if note should be sustained
+	bool shouldSendNoteOff[128];  //used to determine which notes to send MIDI offs to
+	bool startSustainedNote[128]; //used to determine if a sustained note should start
 
 	vector<vector<Cell> > grid;
 	int getNumNotesOn();
